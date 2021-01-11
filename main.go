@@ -8,11 +8,13 @@ import (
 	"sort"
 
 	"github.com/gorilla/pat"
+	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/twitter"
 )
 
+// ProviderIndex is ...
 type ProviderIndex struct {
 	Providers    []string
 	ProvidersMap map[string]string
@@ -22,6 +24,8 @@ func main() {
 	goth.UseProviders(
 		twitter.New("78KQ0Abr9LVvMRoJhF3952pqS", "VjHpiYvFWS6ntGDGmIHR8aIRRLE4kxHDKhj0oDF9bNBU4rF983", "http://127.0.0.1:3000/auth/twitter/callback"),
 	)
+
+	gothic.Store = sessions.NewCookieStore([]byte("VjHpiYvFWS6ntGDGmIHR8aIRRLE4kxHDKhj0oDF9bNBU4rF983"))
 
 	m := make(map[string]string)
 	m["twitter"] = "Twitter"
@@ -38,6 +42,7 @@ func main() {
 	}
 
 	p := pat.New()
+
 	p.Get("/auth/{provider}/callback", func(res http.ResponseWriter, req *http.Request) {
 
 		user, err := gothic.CompleteUserAuth(res, req)
@@ -46,6 +51,7 @@ func main() {
 			return
 		}
 		t, _ := template.ParseFiles("templates/success.html")
+		log.Println("I ran!!")
 		t.Execute(res, user)
 	})
 
@@ -58,6 +64,7 @@ func main() {
 	p.Get("/auth/{provider}", func(res http.ResponseWriter, req *http.Request) {
 		// try to get the user without re-authenticating
 		if gothUser, err := gothic.CompleteUserAuth(res, req); err == nil {
+			log.Println("He ran!!")
 			t, _ := template.ParseFiles("templates/success.html")
 			t.Execute(res, gothUser)
 		} else {
