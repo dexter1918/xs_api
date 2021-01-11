@@ -13,7 +13,6 @@ import (
 	"github.com/markbates/goth/providers/twitter"
 )
 
-// ProviderIndex is ...
 type ProviderIndex struct {
 	Providers    []string
 	ProvidersMap map[string]string
@@ -22,8 +21,6 @@ type ProviderIndex struct {
 func main() {
 	goth.UseProviders(
 		twitter.New("78KQ0Abr9LVvMRoJhF3952pqS", "VjHpiYvFWS6ntGDGmIHR8aIRRLE4kxHDKhj0oDF9bNBU4rF983", "http://127.0.0.1:3000/auth/twitter/callback"),
-		// If you'd like to use authenticate instead of authorize in Twitter provider, use this instead.
-		// twitter.NewAuthenticate(os.Getenv("TWITTER_KEY"), os.Getenv("TWITTER_SECRET"), "http://localhost:3000/auth/twitter/callback"),
 	)
 
 	m := make(map[string]string)
@@ -50,12 +47,6 @@ func main() {
 		}
 		t, _ := template.ParseFiles("templates/success.html")
 		t.Execute(res, user)
-	})
-
-	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
-		gothic.Logout(res, req)
-		res.Header().Set("Location", "/")
-		res.WriteHeader(http.StatusTemporaryRedirect)
 	})
 
 	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
