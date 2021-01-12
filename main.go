@@ -36,9 +36,11 @@ func LogoutHandler(res http.ResponseWriter, req *http.Request) {
 func AutoAuthenticateHanlder(res http.ResponseWriter, req *http.Request) {
 	// This tries to get the user without re-authenticating
 	if gothUser, err := gothic.CompleteUserAuth(res, req); err == nil {
+		log.Println("If executed")
 		t, _ := template.ParseFiles("templates/success.html")
 		t.Execute(res, gothUser)
 	} else {
+		log.Println("Else executed")
 		gothic.BeginAuthHandler(res, req)
 	}
 }
