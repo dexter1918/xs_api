@@ -49,8 +49,8 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 	m["twitter"] = "Twitter"
 
 	providerIndex := &ProviderIndex{
-		Providers:    "twitter",
-		ProvidersMap: m,
+		Provider:    "twitter",
+		ProviderMap: m,
 	}
 	t, _ := template.ParseFiles("templates/index.html")
 	t.Execute(res, providerIndex)
@@ -78,6 +78,6 @@ func main() {
 
 // ProviderIndex is ...
 type ProviderIndex struct {
-	Providers    string
-	ProvidersMap map[string]string
+	Provider    string
+	ProviderMap map[string]string
 }
