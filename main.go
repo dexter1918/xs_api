@@ -13,6 +13,7 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/twitter"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -32,22 +33,22 @@ type ProviderIndex struct {
 
 func main() {
 
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	// client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	// ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-	err = client.Connect(ctx)
+	// err = client.Connect(ctx)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Disconnect(ctx)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer client.Disconnect(ctx)
 
-	fmt.Println("Connected to MongoDB!")
+	// fmt.Println("Connected to MongoDB!")
 
 	goth.UseProviders(
 		twitter.New("78KQ0Abr9LVvMRoJhF3952pqS", "VjHpiYvFWS6ntGDGmIHR8aIRRLE4kxHDKhj0oDF9bNBU4rF983", "http://127.0.0.1:3000/auth/twitter/callback"),
@@ -58,34 +59,66 @@ func main() {
 
 	p.Get("/auth/{provider}/callback", func(res http.ResponseWriter, req *http.Request) {
 
+		var userPresent bool = false
+
 		user, err := gothic.CompleteUserAuth(res, req)
 		if err != nil {
 			fmt.Fprintln(res, err)
 			return
 		}
+
 		t, _ := template.ParseFiles("templates/success.html")
 		t.Execute(res, user)
 
-		// defer cursor.Close(ctx)
-		// for cursor.Next(ctx) {
-		// 	var userDoc bson.M
-		// 	if err = cursor.Decode(&userDoc); err != nil {
-		// 		log.Fatal(err)
-		// 	}
-		// 	if userDoc["userid"] == "ssssssss" {
-		// 		fmt.Println("It's here")
-		// 	}
-		// }
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 
-		myuserdataCollection := client.Database("testdb").Collection("myuserdata")
-
-		//Insert One document
-		user1 := UserData{user.UserID, user.Email, user.Name}
-		insertResult, err := myuserdataCollection.InsertOne(context.TODO(), user1)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+
+		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+		err = client.Connect(ctx)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer client.Disconnect(ctx)
+
+		//fmt.Println("Connected to MongoDB!")
+
+		tempDB := client.Database("testdb")
+		testCollection := tempDB.Collection("myuserdata")
+
+		cursor, err := testCollection.Find(ctx, bson.M{})
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer cursor.Close(ctx)
+
+		for cursor.Next(ctx) {
+			var userDoc bson.M
+			if err = cursor.Decode(&userDoc); err != nil {
+				log.Fatal(err)
+			}
+			if userDoc["userid"] == user.UserID {
+				//fmt.Println("Found the user!")
+				userPresent = true
+				break
+			}
+		}
+		if userPresent != true {
+			myuserdataCollection := client.Database("testdb").Collection("myuserdata")
+
+			//Insert One user's document
+			user1 := UserData{user.UserID, user.Email, user.Name}
+			insertResult, err := myuserdataCollection.InsertOne(context.TODO(), user1)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+
+		}
 
 	})
 
