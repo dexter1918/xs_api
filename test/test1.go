@@ -55,15 +55,6 @@ func main() {
 		}
 	}
 
-	// var episodesFiltered []bson.M
-	// if err = filterCursor.All(ctx, &episodesFiltered); err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// for c, x := range episodesFiltered {
-	// 	fmt.Println(c, x["name"])
-	// }
-
 	myuserdataCollection := client.Database("testdb").Collection("myuserdata")
 
 	//Insert One document

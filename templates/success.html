@@ -5,7 +5,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> <!-- load bulma css -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- load fontawesome -->
       <style>
-          body        { padding-top:70px; }
+         body { padding-top:70px; }
+        .button-container form,
+        .button-container form div { display: inline; }
+        .button-container button { display: inline; vertical-align: middle; }
+        /* .container div { width: 100%; height: 100%; } */
       </style>
   </head>
   <body>
@@ -16,13 +20,24 @@
             <div class="col-sm-6">
                 <div class="well">
                         <p>
-                            <strong>Id</strong>: {{.UserID}}<br>
+                            <strong>Name</strong>: {{.Name}}<br>
+                            <strong>UserName</strong>: {{.NickName}}<br>
                             <strong>Email</strong>: {{.Email}}<br>
-                            <strong>Name</strong>: {{.Name}}
+                            <strong>UserId</strong>: {{.UserID}}
                         </p>
-                        <form action="/logout/twitter">
-                          <input type="submit" value="Log Out" />
-                        </form>
+                        <div class="button-container">
+                          <form action="confirm.php" method="post">
+                              <div>
+                                  <button type="submit">Edit Information</button>
+                              </div>
+                          </form>
+                      
+                          <form action="/logout/twitter">
+                              <div>
+                                  <button type="submit">Logout</button>
+                              </div>
+                          </form>
+                      </div>
                 </div>
             </div>
         </div>

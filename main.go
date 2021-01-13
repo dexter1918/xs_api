@@ -20,9 +20,10 @@ import (
 
 // UserData is ...
 type UserData struct {
-	UserID string
-	Email  string
-	Name   string
+	Name     string
+	Username string
+	Email    string
+	UserID   string
 }
 
 // ProviderIndex is ...
@@ -32,24 +33,6 @@ type ProviderIndex struct {
 }
 
 func main() {
-
-	// client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
-
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-
-	// err = client.Connect(ctx)
-
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer client.Disconnect(ctx)
-
-	// fmt.Println("Connected to MongoDB!")
-
 	goth.UseProviders(
 		twitter.New("78KQ0Abr9LVvMRoJhF3952pqS", "VjHpiYvFWS6ntGDGmIHR8aIRRLE4kxHDKhj0oDF9bNBU4rF983", "http://127.0.0.1:3000/auth/twitter/callback"),
 	)
@@ -101,6 +84,7 @@ func main() {
 			if err = cursor.Decode(&userDoc); err != nil {
 				log.Fatal(err)
 			}
+			// fmt.Println(user.NickName)
 			if userDoc["userid"] == user.UserID {
 				//fmt.Println("Found the user!")
 				userPresent = true
@@ -111,15 +95,13 @@ func main() {
 			myuserdataCollection := client.Database("testdb").Collection("myuserdata")
 
 			//Insert One user's document
-			user1 := UserData{user.UserID, user.Email, user.Name}
+			user1 := UserData{user.Name, user.NickName, user.Email, user.UserID}
 			insertResult, err := myuserdataCollection.InsertOne(context.TODO(), user1)
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println("Inserted a single document: ", insertResult.InsertedID)
-
+			log.Println("User inserted with Object ID: ", insertResult.InsertedID)
 		}
-
 	})
 
 	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
@@ -131,11 +113,11 @@ func main() {
 	p.Get("/auth/{provider}", func(res http.ResponseWriter, req *http.Request) {
 		// This tries to get the user without re-authenticating
 		if gothUser, err := gothic.CompleteUserAuth(res, req); err == nil {
-			log.Println("If executed")
+			//log.Println("If executed")
 			t, _ := template.ParseFiles("templates/success.html")
 			t.Execute(res, gothUser)
 		} else {
-			log.Println("Else executed")
+			//log.Println("Else executed")
 			gothic.BeginAuthHandler(res, req)
 		}
 	})
