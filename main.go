@@ -96,6 +96,9 @@ func main() {
 		if userPresent != true {
 			myuserdataCollection := client.Database("testdb").Collection("myuserdata")
 
+			// date := time.Now().UTC()
+			// log.Println(date.Format("02 Jan 2006"))
+
 			//Insert One user's document
 			user1 := UserData{user.Name, user.NickName, user.Email, user.UserID, user.AccessToken, user.AvatarURL}
 			// log.Println(user.AvatarURL)
@@ -103,7 +106,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-				log.Println("User inserted with Object ID: ", insertResult.InsertedID)
+			log.Println("User inserted with Object ID: ", insertResult.InsertedID)
 		}
 
 		t, _ := template.ParseFiles("templates/success.html")
@@ -111,7 +114,7 @@ func main() {
 	})
 
 	p.Get("/editinfo/{provider}", func(res http.ResponseWriter, req *http.Request) {
-		log.Println("editinfo executed!")
+		// log.Println("editinfo executed!")
 		a := 10
 		t, _ := template.ParseFiles("templates/editinfo.html")
 		t.Execute(res, a)
