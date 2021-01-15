@@ -1,47 +1,150 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Twitter SignIn</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> <!-- load bulma css -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- load fontawesome -->
-      <style>
-         body { padding-top:70px; }
-        .button-container form,
-        .button-container form div { display: inline; }
-        .button-container button { display: inline; vertical-align: middle; }
-        /* .container div { width: 100%; height: 100%; } */
-      </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="jumbotron">
-          <h1 class="text-success  text-center"><span class="fa fa-user"></span> Profile Information</h1>
-          <div class="row">
-            <div class="col-sm-6">
-                <div class="well">
-                        <p>
-                            <strong>Name</strong>: {{.Name}}<br>
-                            <strong>UserName</strong>: {{.NickName}}<br>
-                            <strong>Email</strong>: {{.Email}}<br>
-                            <strong>UserId</strong>: {{.UserID}}
-                        </p>
-                        <div class="button-container">
-                          <form action="confirm.php" method="post">
-                              <div>
-                                  <button type="submit">Edit Information</button>
-                              </div>
-                          </form>
-                      
-                          <form action="/logout/twitter">
-                              <div>
-                                  <button type="submit">Logout</button>
-                              </div>
-                          </form>
-                      </div>
-                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{{.Name}}</title>
+	<!-- <link rel="stylesheet" href="xs_api\templates\styles.css"> -->
+  <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+body{
+   background-color: #f3f3f3;
+}
+
+.wrapper{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 825px;
+  display: flex;
+  box-shadow: 0 1px 20px 0 rgba(69,90,100,.08);
+}
+
+.wrapper .left{
+  width: 35%;
+  background: linear-gradient(to right,#5bc0de,#46B8FA);
+  padding: 30px 25px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  text-align: center;
+  color: #fff;
+}
+
+.wrapper .left img{
+  border-radius: 6px;
+  height: 100px;
+  width: 100px;
+  margin-bottom: 15px;
+}
+
+.wrapper .left h4{
+  margin-bottom: 10px;
+}
+
+.wrapper .left p{
+  font-size: 12px;
+}
+
+.wrapper .right{
+  width: 75%;
+  background: #fff;
+  padding: 35px 30px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.wrapper .right .info,
+.wrapper .right .projects{
+  margin-bottom: 25px;
+}
+
+.wrapper .right .info h3,
+.wrapper .right .projects h3{
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #353c4e;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+}
+
+.wrapper .right .info_data,
+.wrapper .right .projects_data{
+  display: flex;
+  justify-content: space-between;
+}
+
+.wrapper .right .info_data .data,
+.wrapper .right .projects_data .data{
+  width: 45%;
+}
+
+.wrapper .right .info_data .data h4,
+.wrapper .right .projects_data .data h4{
+    color: #353c4e;
+    margin-bottom: 5px;
+}
+
+.wrapper .right .info_data .data p,
+.wrapper .right .projects_data .data p{
+  font-size: 13px;
+  margin-bottom: 10px;
+  color: #919aa3;
+}
+  </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="left">
+        <img src="{{.AvatarURL}}" 
+        alt="user" width="100">
+        <h4>{{.Name}}</h4>
+         <p>Twitter User</p>
+    </div>
+    <div class="right">
+        <div class="info">
+            <h3>General Information</h3>
+            <div class="info_data">
+                 <div class="data">
+                    <h4>Email</h4>
+                    <p>{{.Email}}</p>
+                 </div>
+                 <div class="data">
+                   <h4>UserID</h4>
+                    <p>{{.UserID}}</p>
+              </div>
             </div>
         </div>
+      <div class="projects">
+            <h3>Twitter Account Info.</h3>
+            <div class="projects_data">
+                <div class="data">
+                  <h4>Access Token</h4>
+                  <p>{{.AccessToken}}</p>
+                </div>              
+                 <div class="data">
+                    <h4>Username</h4>
+                    <p>{{.NickName}}</p>
+                 </div>
+            </div>
+        </div>
+        <div class="logout_button">
+          <a href="/logout/twitter" class="btn btn-info btn-lg">
+            <span class="glyphicon glyphicon-log-out"></span> Log out
+          </a>
       </div>
     </div>
-  </body>
+</div>
+</body>
 </html>

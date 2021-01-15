@@ -20,10 +20,12 @@ import (
 
 // UserData is ...
 type UserData struct {
-	Name     string
-	Username string
-	Email    string
-	UserID   string
+	Name        string
+	Username    string
+	Email       string
+	UserID      string
+	AccessToken string
+	AvatarURL   string
 }
 
 // ProviderIndex is ...
@@ -50,8 +52,8 @@ func main() {
 			return
 		}
 
-		t, _ := template.ParseFiles("templates/success.html")
-		t.Execute(res, user)
+		// t, _ := template.ParseFiles("templates/success.html")
+		// t.Execute(res, user)
 
 		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 
@@ -95,13 +97,24 @@ func main() {
 			myuserdataCollection := client.Database("testdb").Collection("myuserdata")
 
 			//Insert One user's document
-			user1 := UserData{user.Name, user.NickName, user.Email, user.UserID}
+			user1 := UserData{user.Name, user.NickName, user.Email, user.UserID, user.AccessToken, user.AvatarURL}
+			// log.Println(user.AvatarURL)
 			insertResult, err := myuserdataCollection.InsertOne(context.TODO(), user1)
 			if err != nil {
 				log.Fatal(err)
 			}
-			log.Println("User inserted with Object ID: ", insertResult.InsertedID)
+				log.Println("User inserted with Object ID: ", insertResult.InsertedID)
 		}
+
+		t, _ := template.ParseFiles("templates/success.html")
+		t.Execute(res, user)
+	})
+
+	p.Get("/editinfo/{provider}", func(res http.ResponseWriter, req *http.Request) {
+		log.Println("editinfo executed!")
+		a := 10
+		t, _ := template.ParseFiles("templates/editinfo.html")
+		t.Execute(res, a)
 	})
 
 	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
@@ -134,6 +147,8 @@ func main() {
 		t.Execute(res, providerIndex)
 	})
 
-	log.Println("listening on localhost:3000")
+	//log.Println("listening on localhost:3000")
 	log.Fatal(http.ListenAndServe(":3000", p))
 }
+
+// Last change: Added endpoint for editinfo ("/editinfo/{provider}")
