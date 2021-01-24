@@ -64,9 +64,6 @@ func main() {
 			return
 		}
 
-		// t, _ := template.ParseFiles("templates/success.html")
-		// t.Execute(res, user)
-
 		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 
 		if err != nil {
@@ -123,14 +120,14 @@ func main() {
 			log.Println("User inserted with Object ID: ", insertResult.InsertedID)
 		}
 
-		t, _ := template.ParseFiles("templates/success.html")
+		t, _ := template.ParseFiles("profile.html")
 		t.Execute(res, user)
 	})
 
 	p.Get("/editinfo/{provider}", func(res http.ResponseWriter, req *http.Request) {
 		// log.Println("editinfo executed!")
 		a := 10
-		t, _ := template.ParseFiles("templates/editinfo.html")
+		t, _ := template.ParseFiles("editinfo.html")
 		t.Execute(res, a)
 	})
 
@@ -144,7 +141,7 @@ func main() {
 		// This tries to get the user without re-authenticating
 		if gothUser, err := gothic.CompleteUserAuth(res, req); err == nil {
 			//log.Println("If executed")
-			t, _ := template.ParseFiles("templates/success.html")
+			t, _ := template.ParseFiles("profile.html")
 			t.Execute(res, gothUser)
 		} else {
 			//log.Println("Else executed")
@@ -160,7 +157,7 @@ func main() {
 			Provider:    "twitter",
 			ProviderMap: m,
 		}
-		t, _ := template.ParseFiles("templates/index.html")
+		t, _ := template.ParseFiles("index.html")
 		t.Execute(res, providerIndex)
 	})
 
